@@ -315,6 +315,10 @@ namespace _ {
         r[i] = this.slice(i * count, ++i * count)
       return r;
     };
+    Event && (Event.prototype.off = function () {
+      this.stopImmediatePropagation();
+      this.preventDefault();
+    })
   }
 }
 
@@ -355,6 +359,10 @@ declare global {
     dic<U>(callback: (value: T) => [string, U]): Dic<U>;
     //extract<>(field: K): T[K][];
 
+  }
+
+  interface Event {
+    off(): void;
   }
 }
 
