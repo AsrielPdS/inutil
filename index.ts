@@ -50,7 +50,9 @@ namespace _ {
     return obj;
   }
   export const arr = <T>(v: T | T[]) => isA(v) ? v : [v];
-  export const has = <T extends number>(value: T, check: T) => (value & check) == check;
+  /**extract from enum */
+  export const efe = <T extends number>(value: T, check: T) => (value & check) == check;
+  export const has = (field: Key | symbol, obj: any) => obj && field in obj;
   export function delay(index: number, cb: Function, time = 500) {
     clearTimeout(index);
     return setTimeout(cb, time);
