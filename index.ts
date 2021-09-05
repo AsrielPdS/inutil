@@ -60,6 +60,7 @@ namespace _ {
   export const slip = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   export const clamp = <T>(value: T, min: T, max: T) => value < min ? min : value > max ? max : value;
 
+  export const vals = <T>(obj: T) => Object.values(obj);
   export const ex = <T>(value: T, extension: Partial<T>) => Object.assign(value, extension);
   export function sgn<T, U>(target: T, source: U): T & U;
   export function sgn<T, U, V>(target: T, source1: U, source2: V): T & U & V;
@@ -232,6 +233,32 @@ namespace _ {
   export const inv = (key?: Key) => new Error(`invalid action`);
 
 
+  export function first<T>(dic: Dic<T>, fn?: (value: T, key: str) => unknown) {
+    for (let key in dic)
+      if (!fn || fn(dic[key], key))
+        return dic[key];
+    return void 0;
+  }
+  export function each<T = any>(dic: Dic<T>, forEach: (value: T, key: str) => any | false) {
+    for (let key in dic) {
+      let t = forEach(dic[key], key);
+      if (t === false)
+        return;
+    }
+    return dic;
+  }
+  /**
+   * dictionary to Array
+   * @param dic
+   * @param fn
+   */
+  export function dta<T, U>(dic: Dic<T>, fn: (value: T, key: str) => U) {
+    var result: U[] = [];
+    for (var key in dic)
+      result.push(fn(dic[key], key));
+    return result;
+  }
+  
   export function expand() {
 
     String.prototype.padStart ||= function (this: string, length, pattern) {
@@ -293,11 +320,11 @@ namespace _ {
           return i;
       return -1;
     };
-    Array.prototype.dic = function <U>(this: Array<any>, callback: (value: any) => [string, U]): Dic<U> {
-      var result = {};
+    Array.prototype.dic = function <U>(this: Array<any>, callback: (value: any, index: num) => [string, U]): Dic<U> {
+      let result = {};
       for (let i = 0; i < this.length; i++) {
         let value = this[i];
-        let temp = callback(value);
+        let temp = callback(value, i);
         result[temp[0]] = temp[1];
       }
       return result;
@@ -358,7 +385,7 @@ declare global {
       * map array to dictionary
       * @param callback
       */
-    dic<U>(callback: (value: T) => [string, U]): Dic<U>;
+    dic<U>(callback: (value: T, index: num) => [string, U]): Dic<U>;
     //extract<>(field: K): T[K][];
 
   }
