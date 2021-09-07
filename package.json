@@ -1,13 +1,15 @@
 {
   "name": "inutil",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "homepage": "https://github.com/AsrielPires/inutil",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["utility"],
+  "keywords": [
+    "utility"
+  ],
   "author": "Asriel Pires",
   "license": "ISC"
 }
