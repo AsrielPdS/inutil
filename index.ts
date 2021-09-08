@@ -33,22 +33,6 @@ namespace _ {
   export const isP = (value: any): value is PromiseLike<any> => isF(value.then);
   export const isB = (value: unknown): value is boolean => typeof value === 'boolean';
 
-  export function clone<T extends Object>(obj: T): T {
-    if (typeof obj === 'object') {
-      let nObj: any;
-      if (obj instanceof Array) {
-        nObj = Array(obj.length);
-        for (let i = 0; i < obj.length; i++)
-          nObj[i] = clone(obj[i]);
-      } else {
-        nObj = {};
-        for (let key in obj)
-          nObj[key] = clone(obj[key]);
-      }
-      obj = nObj;
-    }
-    return obj;
-  }
   export const arr = <T>(v: T | T[]) => isA(v) ? v : [v];
   /**extract from enum */
   export const efe = <T extends number>(value: T, check: T) => (value & check) == check;
@@ -112,22 +96,6 @@ namespace _ {
     }
     return <any>obj;
   }
-  export function deepExtend<T extends object, U extends object>(obj: T, extension: U): T & U {
-    for (let key in extension) {
-      let value2 = extension[<string>key];
-
-      if (obj[<string>key] !== undefined) {
-        let value1 = obj[<string>key];
-        if (value2 && value2.__proto__ == Object.prototype && value1 && value1.__proto__ == Object.prototype) {
-          deepExtend(value1, value2);
-        }
-      } else if (value2 && value2.__proto__ == Object.prototype)
-        obj[<string>key] = clone(value2);
-      else obj[<string>key] = value2;
-
-    }
-    return <any>obj;
-  }
 
   export function prot<T extends Object>(constructor: new () => T, obj: Partial<T>): T {
     return Object.assign(new constructor(), obj);
@@ -157,69 +125,7 @@ namespace _ {
     return result;
   }
 
-  export interface EventListenerOptions {
-    delay?: number,
-    once?: boolean,
-    passive?: boolean;
-  }
-  export type EventTargetCallback<T, E = any> = ((this: T, e: E) => any) & { options?: EventListenerOptions; };
-  /**event target */
-  export class ET<T extends Dic = Dic> {
-    /**event handlers */
-    readonly __eh: Dic<EventTargetCallback<this>[]> = {};
-
-    on<K extends keyof T>(event: K, callback: EventTargetCallback<this, T[K]>, options?: EventListenerOptions): this {
-      if (callback) {
-        if (!(event in this.__eh)) {
-          this.__eh[<any>event] = [];
-        }
-        if (options)
-          callback.options = options;
-
-        this.__eh[<any>event].push(callback);
-      }
-      return this;
-    }
-
-    off<K extends keyof T>(event: K, callback?: EventTargetCallback<this, T[K]>) {
-      if (event in this.__eh) {
-
-        if (callback) {
-          var stack = this.__eh[<any>event];
-          for (let i = 0, l = stack.length; i < l; i++) {
-            if (stack[i] === callback) {
-              stack.splice(i, 1);
-              return;
-            }
-          }
-        } else delete this.__eh[<any>event];
-      }
-      return this;
-    }
-
-    trigger<K extends keyof T>(event: K, data?: T[K]) {
-      let stack = this.__eh[<any>event];
-      if (stack && stack.length) {
-        for (let i = 0, l = stack.length; i < l; i++) {
-          let e = stack[i];
-          if (e.options) {
-            if (e.options.once)
-              stack.splice(i--, 1);
-            if (e.options.delay) {
-              setTimeout(() => {
-                e.call(this, data);
-              }, e.options.delay);
-              continue;
-            }
-          }
-
-          if (e.call(this, data) === false)
-            return false;
-        }
-      } else return -1;
-      return true;
-    }
-  }
+  
 
 
   export function isEmpty(obj: object) {
