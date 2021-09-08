@@ -27,7 +27,7 @@ namespace _ {
   export const t = (value: unknown) => value !== false;
   export const def = <T>(value: T, def: T): T => value === undefined ? def : value;
   export const isO = (value: unknown): value is object => value && typeof value == 'object';
-  export const isA = <T = unknown>(value: unknown): value is Array<T> => value instanceof Array;
+  export const isA = <T = unknown>(value: unknown): value is Array<T> => Array.isArray(value);
   export const isU = (value: unknown): value is undefined => value === void 0;
   /** is promise like */
   export const isP = (value: any): value is PromiseLike<any> => isF(value.then);
@@ -125,7 +125,7 @@ namespace _ {
     return result;
   }
 
-  
+
 
 
   export function isEmpty(obj: object) {
@@ -164,7 +164,7 @@ namespace _ {
       result.push(fn(dic[key], key));
     return result;
   }
-  
+
   export function expand() {
 
     String.prototype.padStart ||= function (this: string, length, pattern) {
