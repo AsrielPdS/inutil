@@ -2,11 +2,12 @@
   "name": "inutil",
   "version": "1.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "inutil.js",
   "homepage": "https://github.com/AsrielPires/inutil",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "sideEffects": false,
   "keywords": [
     "utility"
   ],
